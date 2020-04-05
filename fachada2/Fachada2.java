@@ -14,6 +14,7 @@ import dao2.DAOUsuario;
 
 
 
+
 public class Fachada2 {
 	private static DAOUsuario daousuario = new DAOUsuario();  
 	private static DAOPedido daopedido = new DAOPedido();  
@@ -72,7 +73,7 @@ public class Fachada2 {
 		Usuario u = daousuario.read(cpf);
 		if(u != null) {
 			DAO.rollback();
-			throw new Exception("cadastrar pessoa - pessoa com cpf j· cadastrado:" + nome);
+			throw new Exception("cadastrar pessoa - pessoa com cpf j√° cadastrado:" + nome);
 		}
 		
 		//Formatando string para data
@@ -102,7 +103,7 @@ public class Fachada2 {
 	}
 	
 	
-	// S” PRA TESTE -- EXCLUI DEPOIS
+	// S√ì PRA TESTE -- EXCLUI DEPOIS
 	public static void excluirVarios(String cpf) throws Exception {
 		DAO.begin();
 		List<Usuario> usuarios= daousuario.readAll();
@@ -119,7 +120,7 @@ public class Fachada2 {
 	}
 	
 	
-	//ALTERANDO DADOS USUARIO N√O LOGADO
+	//ALTERANDO DADOS USUARIO N√ÉO LOGADO
 	public static void alterarDadosNaoLogado(String cpf,String novonome, String novoemail, String novasenha) throws Exception{
 		DAO.begin();		
 		Usuario us = daousuario.read(cpf);
@@ -207,7 +208,7 @@ public class Fachada2 {
 	
 	
 	//EXCLUIR TELEFONE 
-	public static Pedido excluirPedidoPessoa(Integer numero) 
+	public static Pedido excluirPedidoPessoa(Integer codigo) 
 			throws  Exception{
 		DAO.begin();
 		
@@ -216,17 +217,15 @@ public class Fachada2 {
 			throw new Exception("Precisa fazer login");
 		};
 		
-		//N√O est· localizando
-//		String num = Integer.toString(numero);
-//		Pedido t = daopedido.read(num);
-//		System.out.println(t);
-//		if(t == null) {
-//			DAO.rollback();
-//			throw new Exception("excluir Pedido - Pedido n„o cadastrado:" + logado.getNomeUsuario());
-//		}
+		Pedido t = daopedido.read(codigo);
+		
+		if(t == null) {
+			DAO.rollback();
+			throw new Exception("excluir Pedido - Pedido n√£o cadastrado:" + logado.getNomeUsuario());
+		}
 //		
 		
-		Pedido t = logado.localizar(numero);	//localiza dentro do objeto
+		t = logado.localizar(codigo);	//localiza dentro do objeto
 		if(t == null) {
 			DAO.rollback();
 			throw new Exception("excluir pedido - pessoa nao possui este pedido:" + logado.getNomeUsuario());
@@ -239,18 +238,24 @@ public class Fachada2 {
 		return t;
 	}
 	
-	
-	//APAGAR TODOS OS PEDIDOS
-//	public static void removerPedidos(Usuario u) throws  Exception{
-//		if(logado==null) {					
-//			throw new Exception("Precisa fazer login");
-//		};
-//		
-//		for(Pedido p : u.getPedidos()) {
-//			u.remover(p);
-//			daopedido.delete(p);		//deletar telefone orfao do banco
-//			
-//		}
-//	}
+	public static void alterarPedido(Integer codigo,String novobairro, String novarua, String novonumero  ) throws Exception{
+		DAO.begin();
+		
+		if(logado==null) {	
+			DAO.rollback();
+			throw new Exception("Precisa fazer login");
+		};
+		
+		Pedido t = daopedido.read(codigo);	
+		if (t==null) {
+			DAO.rollback();
+			throw new Exception("alterar pedido - pedido inexistente:" + codigo);
+		}
+		
+		Endereco novoend = new Endereco(t.getEnderecoEntrega().getUf(),t.getEnderecoEntrega().getCidade(),novobairro,novarua,novonumero); 
+		t.setEnderecoEntrega(novoend); 			
+		t = daopedido.update(t);     	
+		DAO.commit();	
+	}
 
 }
