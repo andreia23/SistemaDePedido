@@ -10,12 +10,11 @@ import com.db4o.query.Query;
 
 import Modelo2.Pedido;
 
- 
+// Biel o Guru que trouxe conhecimento pra minha vida
 public class DAOPedido  extends DAO<Pedido>{
-	//numero é campo único 
+	//numero Ã© campo Ãºnico 
 	public Pedido read (Object chave) {
-		String codigoPedido = (String) chave;
-		
+		Integer codigoPedido = (Integer) chave;
 		
 		Query q = manager.query();
 		q.constrain(Pedido.class);
