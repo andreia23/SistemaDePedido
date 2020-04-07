@@ -8,6 +8,7 @@ package aplicacao_console2;
 
 
 import Modelo2.Usuario;
+import fachada.Fachada;
 import fachada2.Fachada2;
 
 
@@ -19,14 +20,15 @@ public class Atualizar {
 		try {
 			
 
-			//TESTAR ALTERAR DADOS
+			//TESTAR ALTERAR DADOS DO USUARIO
 //			System.out.println("alterando...");
 //			Fachada2.alterarDadosLogado("Mael","mael@IFPB","2222");
 			
 			
 			//TESTAR LOGIN
-			u = Fachada2.login("luci@ifpb", "5050");
-			System.out.println("pessoa logada =>" + Fachada2.getLogado().getNomeUsuario());
+			u = Fachada2.login("tom@ifpb", "8888");
+			System.out.println("pessoa logada =>" + Fachada2.getLogado());
+			
 
 			
 			//TESTAR LOGOFF
@@ -35,12 +37,35 @@ public class Atualizar {
 			
 			
 			//TESTAR REALIZAR PEDIDO
-//			Fachada2.realizarPedido("PB","Conde","Centro","Epitacio", "08");
+//			Fachada2.realizarPedido("PB","Lucena","Vale","Josefa","23");
 //			System.out.println("pedido feito com sucesso=>" + Fachada2.getLogado().getPedidos());
-			
+//			
 						
 			//TESTAR REMOVER PEDIDO CODIGO
-			Fachada2.excluirPedidoPessoa(8);
+//			Fachada2.excluirPedidoPessoa(2);
+			
+			
+			//TESTAR ALTERAR DADOS DO PEDIDO
+//			Fachada2.alterarPedido(4, "Jaguaribe", " Carmem","56");
+			
+			//TESTAR ADICIONAR ITENS
+//			Fachada2.selecionarItens("Pipoca",4);
+			
+			
+			//TESTAR LISTAR PEDIDO POR USUARIO
+//			System.out.println(Fachada2.listarMeusPedidos());
+			
+			
+			//TESTAR LISTAR ITENS POR PEDIDO
+//			System.out.println(Fachada2.listasMeusItens());
+			
+			
+			//TESTAR APAGAR ITEM CODIGO
+//			Fachada2.excluirItemPedido(1);
+			
+			
+			//TESTAR ALTERAR DADOS DO ITEM
+			Fachada2.alterarItem(2,"Pipos", 5);
 			
 		
 		}
