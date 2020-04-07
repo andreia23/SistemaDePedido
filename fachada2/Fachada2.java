@@ -6,20 +6,22 @@ import java.util.List;
 
 import Modelo2.Endereco;
 import Modelo2.Pedido;
+import Modelo2.PedidoItem;
+import Modelo2.Produto;
 import Modelo2.Usuario;
 import dao2.DAO;
 import dao2.DAOPedido;
+import dao2.DAOPedidoItem;
 import dao2.DAOUsuario;
-
-
-
 
 
 public class Fachada2 {
 	private static DAOUsuario daousuario = new DAOUsuario();  
-	private static DAOPedido daopedido = new DAOPedido();  
+	private static DAOPedido daopedido = new DAOPedido(); 
+	private static DAOPedidoItem daopedidoitem = new DAOPedidoItem();
 	private static Usuario logado;
 	public static Integer codigoPedido = 0;
+	public static Integer codPedidoIntem = 0;
 
 	public static void inicializar(){
 		DAO.open();
@@ -28,13 +30,14 @@ public class Fachada2 {
 		DAO.close();
 	}
 	
+	/**********************************************************
+	 * USUARIO 
+	 **********************************************************/
 	
 	///localiza a pessoa no repositorio, a torna pessoa logada e retorna esta pessoa
 	public static Usuario login(String email, String senha) throws  Exception {
-		
-		
-		if(logado!=null) {
 			
+		if(logado!=null) {	
 			throw new Exception("ja existe um usuario logado:"+logado.getEmail());
 		}
 
@@ -44,7 +47,6 @@ public class Fachada2 {
 		}
 		
 		logado = usu;
-		
 		return usu;
 		
 	}
@@ -71,6 +73,7 @@ public class Fachada2 {
 	public static Usuario cadastrarUsuario( String nome,String cpf,String datanasc, String email, String senha) throws  Exception{
 		DAO.begin();
 		Usuario u = daousuario.read(cpf);
+		
 		if(u != null) {
 			DAO.rollback();
 			throw new Exception("cadastrar pessoa - pessoa com cpf já cadastrado:" + nome);
@@ -85,9 +88,24 @@ public class Fachada2 {
 		DAO.commit();
 		return u;
 	}
+		
+	
+	// LISTANDO USUARIOS
+		// Tinha dado erro
+	public static String listarUsuarios(){
+		List<Usuario> usuarios= daousuario.readAll();
+		String texto="-----------listagem de Pessoas-----------\n";
+
+		for (Usuario u : usuarios) {
+			texto += u + "\n";
+			//texto += "nome = " + u.getNomeUsuario() + "," + " " + "email = " + u.getEmail() +
+			//	"," + " " + "cpf = " + u.getCpf() + "," + " " + "Senha=" + u.getSenha() + "\n";
+		}
+		return texto;
+	}
 	
 	
-    //EXCLUINDO USUARIO
+        //EXCLUINDO USUARIO
 	public static void excluirUsuario(String cpf) throws Exception {
 		DAO.begin();
 		Usuario u= daousuario.read(cpf);
@@ -108,7 +126,6 @@ public class Fachada2 {
 		DAO.begin();
 		List<Usuario> usuarios= daousuario.readAll();
 		
-		
 		for (Usuario u : usuarios) {
 			if(u.getCpf() == null) {
 				DAO.rollback();
@@ -116,7 +133,6 @@ public class Fachada2 {
 				DAO.commit();
 			}
 		}
-		
 	}
 	
 	
@@ -149,31 +165,14 @@ public class Fachada2 {
 		logado.setNomeUsuario(novonome);
 		logado.setEmail(novoemail);
 		logado.setSenha(novasenha);
-		
 		logado=daousuario.update(logado);     	
 		DAO.commit();	
 	}
+
 	
-	
-	// LISTANDO USUARIOS
-		// Tinha dado erro
-	public static String listarUsuarios(){
-		List<Usuario> usuarios= daousuario.readAll();
-		String texto="-----------listagem de Pessoas-----------\n";
-		
-		if(usuarios == null) {
-			System.out.println("sem listar");
-		}
-		
-		for (Usuario u : usuarios) {
-			texto += u + "\n";
-//			texto += "nome = " + u.getNomeUsuario() + "," + " " + "email = " + u.getEmail() +
-//				"," + " " + "cpf = " + u.getCpf() + "," + " " + "Senha=" + u.getSenha() + "\n";
-		}
-		
-		return texto;
-	}
-	
+	/**********************************************************
+	 * PEDIDO 
+	 **********************************************************/
 	
 	//REALIZANDO PEDIDO
 		// Falta O codigoPedido pra concertar
@@ -207,9 +206,28 @@ public class Fachada2 {
 	}
 	
 	
-	//EXCLUIR TELEFONE 
-	public static Pedido excluirPedidoPessoa(Integer codigo) 
-			throws  Exception{
+	//LISTA OS PEDIDOS POR USUARIO
+	public static String listarMeusPedidos()throws  Exception {
+
+		if(logado==null) {					
+			throw new Exception("Precisa fazer login");
+		};
+
+		Usuario us = daousuario.read(logado.getCpf());
+		if(us.getPedidos().isEmpty()){
+			throw new Exception("Nenhum pedido realizado");
+		}
+		
+		String texto = "PEDIDOS:" + "\n" ;
+		for(Pedido p : us.getPedidos())
+			texto+= p + "\n";
+		
+		
+		return texto;
+	}
+	
+	//EXCLUIR PEDIDO 
+	public static Pedido excluirPedidoPessoa(Integer codigo) throws  Exception{
 		DAO.begin();
 		
 		if(logado==null) {	
@@ -218,17 +236,15 @@ public class Fachada2 {
 		};
 		
 		Pedido t = daopedido.read(codigo);
-		
 		if(t == null) {
 			DAO.rollback();
-			throw new Exception("excluir Pedido - Pedido não cadastrado:" + logado.getNomeUsuario());
+			throw new Exception("excluir Pedido - Pedido não cadastrado");
 		}
-//		
-		
+				
 		t = logado.localizar(codigo);	//localiza dentro do objeto
 		if(t == null) {
 			DAO.rollback();
-			throw new Exception("excluir pedido - pessoa nao possui este pedido:" + logado.getNomeUsuario());
+			throw new Exception("excluir pedido - pessoa nao possui este pedido:" + logado.getPedidos());
 		}
 		
 		logado.remover(t);
@@ -238,6 +254,8 @@ public class Fachada2 {
 		return t;
 	}
 	
+	
+	//ALTERAR DADOS DO PEDIDO
 	public static void alterarPedido(Integer codigo,String novobairro, String novarua, String novonumero  ) throws Exception{
 		DAO.begin();
 		
@@ -257,5 +275,108 @@ public class Fachada2 {
 		t = daopedido.update(t);     	
 		DAO.commit();	
 	}
+	
+	
+	/**********************************************************
+	 * PEDIDO ITENS 
+	 **********************************************************/
+	
+	//SELECIONA ITENS
+	  //Problema com o codigo
+	public static PedidoItem selecionarItens(String nomeProduto,Integer quantidade) throws  Exception{
+		DAO.begin();
+		
+		codigoPedido = codigoPedido + 2;
+		Pedido pe = daopedido.read(codigoPedido);
+		if(pe == null) {
+			DAO.rollback();
+			throw new Exception("adicionar Item - Pedido nao cadastrado:");
+		}
+				
+		codPedidoIntem++;
+		Produto pro = new Produto(nomeProduto);
+		PedidoItem i = new PedidoItem(codPedidoIntem,pe,quantidade,pro);
+		pe.adicionar(i);
+		daopedido.update(pe);
+		DAO.commit();
+		return i;
+	}
+	
+	
+	//LISTAR TODOS OS ITENS
+	public static String listarItens() { 	
+		List<PedidoItem> aux = daopedidoitem.readAll();
+		String texto="-----------listagem de Pedidos---------\n";
+		for(PedidoItem t: aux) {
+			texto += "\n" + t; 
+		}
+		return texto;
+	}
+	
+	
+	//LISTAR ITENS POR CODIGO DE PEDIDO
+		//Problema com o codigo
+	public static String listasMeusItens()throws  Exception {
+		Pedido pe = daopedido.read(codigoPedido+1);
+		
+		if(pe.getItens().isEmpty()){
+			throw new Exception("Nenhum item adicionado");
+		}
+		
+		String texto = "ITENS:" + "\n" ;
+		for(PedidoItem p : pe.getItens())
+			texto+= p + "\n";
 
+		return texto;
+	}
+	
+	
+	//EXCLUIR ITEM
+		//Problema com o codigo
+	public static PedidoItem excluirItemPedido(Integer codigoItem) throws  Exception{
+		DAO.begin();
+		
+		Pedido ped = daopedido.read(codigoPedido+1);
+		
+		PedidoItem pi = daopedidoitem.read(codigoItem);
+		if(pi == null) {
+			DAO.rollback();
+			throw new Exception("excluir item - Item não cadastrado:");
+		}
+				
+		pi = ped.localizar(codigoItem);	//localiza dentro do objeto
+		if(pi == null) {
+			DAO.rollback();
+			throw new Exception("excluir item - pedido nao possui este item:" + ped.getItens());
+		}
+		
+		ped.remover(pi);
+		daopedido.update(ped);	
+		daopedidoitem.delete(pi);	//excluir telefone orfao
+		DAO.commit();
+		return pi;
+	}
+	
+	
+	//ALTERAR DADOS DO ITEM
+		public static void alterarItem(Integer codigoItem, String novoProduto, Integer novaquantidade  ) throws Exception{
+			DAO.begin();
+			
+			PedidoItem pi = daopedidoitem.read(codigoItem);	
+			if (pi==null) {
+				DAO.rollback();
+				throw new Exception("alterar item - Item inexistente:" );
+			}
+			
+			Produto pro = new Produto(novoProduto);
+			pi.setProduto(pro);
+			pi.setQuantidadeItem(novaquantidade);
+			pi = daopedidoitem.update(pi);     	
+			DAO.commit();	
+		}
+	
+	
+	
+	
+	
 }
