@@ -1,7 +1,7 @@
 /**********************************
  * IFPB - Curso Superior de Tec. em Sist. para Internet
  * Persistencia de Objetos
- * Prof. Fausto Maranh„o Ayres
+ * Prof. Fausto Maranh√£o Ayres
  **********************************/
 
 package dao2;
@@ -17,6 +17,7 @@ import com.db4o.cs.config.ClientConfiguration;
 import com.db4o.query.Query;
 
 import Modelo2.Pedido;
+import Modelo2.PedidoItem;
 import Modelo2.Usuario;
 
 
@@ -39,17 +40,22 @@ public abstract class DAO<T> implements DAOInterface<T> {
 		config.common().objectClass(Usuario.class).cascadeOnUpdate(true);
 		config.common().objectClass(Usuario.class).cascadeOnDelete(true);
 		config.common().objectClass(Usuario.class).cascadeOnActivate(true);
-//		config.common().objectClass(Aluno.class).cascadeOnUpdate(true);
-//		config.common().objectClass(Aluno.class).cascadeOnDelete(true);
-//		config.common().objectClass(Aluno.class).cascadeOnActivate(true);
+		
 		config.common().objectClass(Pedido.class).cascadeOnUpdate(true);
 //		config.common().objectClass(Pedido.class).cascadeOnDelete(true);
 		config.common().objectClass(Pedido.class).cascadeOnActivate(true);
-
+		
+		config.common().objectClass(PedidoItem.class).cascadeOnUpdate(true);
+//		config.common().objectClass(PedidoItem.class).cascadeOnDelete(true);
+		config.common().objectClass(PedidoItem.class).cascadeOnActivate(true);
+		
+		
+		
 		// 		indices
 		
 		config.common().objectClass(Usuario.class).objectField("cpf").indexed(true);
 		config.common().objectClass(Pedido.class).objectField("codigoPedido").indexed(true);
+		config.common().objectClass(PedidoItem.class).objectField("codPedidoItem").indexed(true);
 		
 		manager = 	Db4oEmbedded.openFile(config, "banco.db4o");
 	}
@@ -63,21 +69,19 @@ public abstract class DAO<T> implements DAOInterface<T> {
 		config.common().objectClass(Usuario.class).cascadeOnDelete(true);
 		config.common().objectClass(Usuario.class).cascadeOnActivate(true);
 		
-//		config.common().objectClass(Pessoa.class).cascadeOnUpdate(true);
-//		config.common().objectClass(Pessoa.class).cascadeOnDelete(true);
-//		config.common().objectClass(Pessoa.class).cascadeOnActivate(true);
-//		config.common().objectClass(Aluno.class).cascadeOnUpdate(true);
-//		config.common().objectClass(Aluno.class).cascadeOnDelete(true);
-//		config.common().objectClass(Aluno.class).cascadeOnActivate(true);
 		config.common().objectClass(Pedido.class).cascadeOnUpdate(true);
 //		config.common().objectClass(Pedido.class).cascadeOnDelete(true);
 		config.common().objectClass(Pedido.class).cascadeOnActivate(true);
 
+		config.common().objectClass(PedidoItem.class).cascadeOnUpdate(true);
+//		config.common().objectClass(PedidoItem.class).cascadeOnDelete(true);
+		config.common().objectClass(PedidoItem.class).cascadeOnActivate(true);
 		
         //indices
 		
 		config.common().objectClass(Usuario.class).objectField("cpf").indexed(true);
 		config.common().objectClass(Pedido.class).objectField("codigoPedido").indexed(true);
+		config.common().objectClass(PedidoItem.class).objectField("codPedidoItem").indexed(true);
 
 		manager = Db4oClientServer.openClient(config,"10.0.51.119",34000,"usuario1","senha1");	
 		//manager = Db4oClientServer.openClient(config,"localhost",34000,"usuario1","senha1");
@@ -120,7 +124,7 @@ public abstract class DAO<T> implements DAOInterface<T> {
 		return (List<T>) q.execute();
 	}
 
-	//--------transaÁ„o---------------
+	//--------transa√ß√£o---------------
 	public static void begin(){	 
 	}		// tem que ser vazio
 
@@ -130,7 +134,6 @@ public abstract class DAO<T> implements DAOInterface<T> {
 	public static void rollback(){
 		manager.rollback();
 	}
-
 
 
 }
