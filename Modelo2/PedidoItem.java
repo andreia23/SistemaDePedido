@@ -2,17 +2,22 @@ package Modelo2;
 
 public class PedidoItem {
 
-		
+		private Integer codPedidoItem;
 		private Pedido  pedido;
-		private Long    codPedidoItem;
-		private Long    quantidadeItem;
+		private Integer quantidadeItem;
 		private Float   valorItem;
 		private Produto produto;
 		
-		public PedidoItem() {
-			super();
-		}
 		
+		public PedidoItem(Integer codPedidoItem, Pedido pedido, Integer quantidadeItem, Produto produto) {
+			super();
+			this.codPedidoItem = codPedidoItem + 1;
+			this.pedido = pedido;
+			this.quantidadeItem = quantidadeItem;
+			this.produto = produto;
+		}
+
+
 		public Pedido getPedido() {
 			return pedido;
 		}
@@ -20,17 +25,17 @@ public class PedidoItem {
 			this.pedido = pedido;
 		}
 		
-		public Long getCodPedidoItem() {
+		public Integer getCodPedidoItem() {
 			return codPedidoItem;
 		}
-		public void setCodPedidoItem(Long codPedidoItem) {
+		public void setCodPedidoItem(Integer codPedidoItem) {
 			this.codPedidoItem = codPedidoItem;
 		}
 		
-		public Long getQuantidadeItem() {
+		public Integer getQuantidadeItem() {
 			return quantidadeItem;
 		}
-		public void setQuantidadeItem(Long quantidadeItem) {
+		public void setQuantidadeItem(Integer quantidadeItem) {
 			this.quantidadeItem = quantidadeItem;
 		}
 		
@@ -48,7 +53,15 @@ public class PedidoItem {
 		}
 		
 		
-		
-		
-		
+		@Override
+		public String toString() {
+			String classe = getClass().getSimpleName() + ":";
+			String texto =  String.format("%5s", classe)+ 
+					" CodigoItem = "+ codPedidoItem + 
+					"  Pedido = "+ String.format("%1s",pedido.getCodigoPedido())+
+					"  Quantidade = "+ quantidadeItem +
+					"  Produto = "+ produto.getNomeProduto();	
+			return texto;
+		}
+
 }
