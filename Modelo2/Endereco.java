@@ -23,6 +23,15 @@ public class Endereco {
 			this.numero = numero;
 		}
 		
+		
+//		public Endereco(String bairro, String rua, String numero) {
+//			super();
+//			this.bairro = bairro;
+//			this.rua = rua;
+//			this.numero = numero;
+//		}
+
+
 		public Long getCodEndereco() {
 			return codEndereco;
 		}
@@ -84,7 +93,7 @@ public class Endereco {
 					", Cidade = "+ String.format("%5s",cidade)+
 					", Bairro = "+ String.format("%5s",bairro)+
 					", Rua = "+ String.format("%5s",rua)+
-					", N° = "+ String.format("%2s",numero);
+					", NÂ° = "+ String.format("%2s",numero);
 //		
 //			texto += ", pedidos:";
 //			for(Pedido p : pedidos)
