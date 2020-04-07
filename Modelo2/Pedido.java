@@ -20,7 +20,7 @@ public class Pedido {
 		
 		
 		public Pedido(Integer codigoPedido,Usuario usuario, Endereco enderecoEntrega) {
-			this.codigoPedido = codigoPedido ;
+			this.codigoPedido = codigoPedido + 1 ;
 			this.usuario = usuario;
 			this.enderecoEntrega = enderecoEntrega;
 		}
@@ -61,30 +61,60 @@ public class Pedido {
 		public void setValorTaxa(Float valorTaxa) {
 			this.valorTaxa = valorTaxa;
 		}
+		
 		public Float getValorTotal() {
 			return valorTotal;
 		}
+		
 		public void setValorTotal(Float valorTotal) {
 			this.valorTotal = valorTotal;
 		}
+		
 		public LocalDate getDataPedido() {
 			return dataPedido;
 		}
+		
 		public void setDataPedido(LocalDate dataPedido) {
 			this.dataPedido = dataPedido;
+		
+		}
+		public void adicionar(PedidoItem p){
+			p.setPedido(this);
+			this.itens.add(p);
+		}
+
+		public void remover(PedidoItem p){
+			p.setPedido(null);
+			this.itens.remove(p);
 		}
 		
-		public void setItens(ArrayList<PedidoItem> itens) {
-			itens = itens;
+		
+		public PedidoItem localizar(Integer num){
+			for(PedidoItem p : itens) {
+				if (p.getCodPedidoItem().equals(num))
+					return p;
+			}
+			return null;
 		}
 		
+		
+		public ArrayList<PedidoItem> getItens() {
+			return itens;
+		}
+
+	
 		@Override
 		public String toString() {
 					String classe = getClass().getSimpleName() + ":";
 					String texto =  String.format("%5s", classe)+ 
 							" CodigoPedido = "+ codigoPedido + 
-							"  Usuario = " + String.format("%5s",usuario.getNomeUsuario())+
+							"  Usuario = "+ String.format("%5s",usuario.getNomeUsuario())+
 							   "  "+enderecoEntrega;
+					
+					texto += ", Itens:";
+					for(PedidoItem p : itens)
+						texto+= p.getCodPedidoItem() + ", ";
+
 					return texto;
 		}
 
