@@ -1,11 +1,12 @@
 package aplicacao_swing2;
 /**********************************
  * IFPB - Curso Superior de Tec. em Sist. para Internet
- * ProgramaÁ„o Orientada a Objetos
- * Prof. Fausto Maranh„o Ayres
+ * Programa√ß√£o Orientada a Objetos
+ * Prof. Fausto Maranh√£o Ayres
  **********************************/
 
 import java.awt.EventQueue;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -13,7 +14,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -24,6 +27,9 @@ import fachada2.Fachada2;
 public class TelaPrincipal {
 
 	private JFrame frame;
+	private JLabel label;   //imagem de fundo
+	private JMenuItem itemLogin;
+	private JMenuItem itemLogff;
 	private JMenuItem mntmCadastrar;
 	private JMenuItem mntmListar;
 	private JMenuItem mntmCriar;
@@ -77,12 +83,47 @@ public class TelaPrincipal {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
+		label = new JLabel("");
+        label.setBounds(0, 0, frame.getWidth(), frame.getHeight());
+        ImageIcon imagem = new ImageIcon(getClass().getResource("/imagens/POB.jpg"));
+        imagem = new ImageIcon(imagem.getImage().getScaledInstance(label.getWidth(),label.getHeight(), Image.SCALE_DEFAULT));
+        label.setIcon(imagem);
+        frame.getContentPane().add(label);
+        frame.setResizable(true);
+		
+		
+		
+		
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
+		
 
 		mnPessoa = new JMenu("Usuario");
 		menuBar.add(mnPessoa);
 
+	    itemLogin = new JMenuItem("Login");
+	    itemLogin.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent arg0) {
+	            Login j = new Login();
+	            j.setVisible(true);
+	        }
+	    });
+	    mnPessoa.add(itemLogin);
+
+	    
+	    itemLogff = new JMenuItem("Logoff");
+	    itemLogff.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent arg0) {
+	              try {
+	                  Fachada2.logoff();
+	              } catch (Exception e) {
+	                  e.printStackTrace();
+	              }
+	        }
+	    });
+	    mnPessoa.add(itemLogff);
+	        
+		
 		mntmCadastrar = new JMenuItem("Cadastrar");
 		mntmCadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
