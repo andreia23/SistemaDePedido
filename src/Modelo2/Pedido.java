@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 public class Pedido {
 		
-//		private static int sequence = 0;
 
 		private Integer codigoPedido;
 		private Usuario  usuario;
