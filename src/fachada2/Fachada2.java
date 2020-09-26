@@ -102,7 +102,6 @@ public class Fachada2 {
 		
 	
 	// LISTANDO USUARIOS
-		// Tinha dado erro
 	public static String listarUsuarios(){
 		List<Usuario> usuarios= daousuario.readAll();
 		String texto="-----------listagem de Pessoas-----------\n";
@@ -186,7 +185,6 @@ public class Fachada2 {
 	 **********************************************************/
 	
 	//REALIZANDO PEDIDO
-		// Falta O codigoPedido pra concertar
 	public static Pedido realizarPedido(String uf,String cidade, String bairro, String rua, String numero ) throws  Exception{
 		
 		DAO.begin();
@@ -292,7 +290,6 @@ public class Fachada2 {
 	 **********************************************************/
 	
 	//SELECIONA ITENS
-	//Problema com o codigo
 	public static PedidoItem selecionarItens(String nomeProduto,Integer quantidade) throws  Exception{
 		DAO.begin();
 		
@@ -330,7 +327,6 @@ public class Fachada2 {
 	
 	
 	//LISTAR ITENS POR CODIGO DE PEDIDO
-		//Problema com o codigo do console
 	public static String listasMeusItens()throws  Exception {
 
 		if(logado==null) {	
@@ -352,7 +348,6 @@ public class Fachada2 {
 	
 	
 	//EXCLUIR ITEM
-		//Problema com o codigo no console
 	public static PedidoItem excluirItemPedido(Integer codigoItem) throws  Exception{
 		DAO.begin();
 		

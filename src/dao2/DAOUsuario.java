@@ -86,9 +86,7 @@ class Filtro  implements Evaluation {
 		Usuario u = (Usuario) candidate.getObject();
 		candidate.include( u.getPedidos().size()==n);
 	}
-//	private boolean compara(Usuario p, int n) {
-//		return p.getPedidos().size()==n;
-//	}
+
 }
 
 	
